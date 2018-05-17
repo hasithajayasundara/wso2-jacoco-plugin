@@ -696,15 +696,15 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             }
             return;
         }
-        FileInputStream fis = new FileInputStream(sourceFile);
+        FileInputStream fileInputStream = new FileInputStream(sourceFile);
         ZipEntry zipEntry = new ZipEntry(sourceFileName);
         zipOutputStream.putNextEntry(zipEntry);
         byte[] bytes = new byte[1024];
         int length;
-        while ((length = fis.read(bytes)) >= 0) {
+        while ((length = fileInputStream.read(bytes)) >= 0) {
             zipOutputStream.write(bytes, 0, length);
         }
-        fis.close();
+        fileInputStream.close();
     }
 
     /**
