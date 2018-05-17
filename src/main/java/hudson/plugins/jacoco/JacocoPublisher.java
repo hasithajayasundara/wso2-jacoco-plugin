@@ -628,31 +628,34 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                     Path path = Paths.get(jacocoResourcesFolder);
                     try {
                         Files.createDirectories(path);
-                        logger.println("[JaCoCo plugin] File created successfully at " + jobInfoDirectory + " " + new File(jobInfoDirectory + SOURCE_DIRECTORY).exists());
-                        File resourceFolder = new File(jacocoResourcesFolder);
+                        logger.println("[JaCoCo plugin] File created successfully at " + jobInfoDirectory);
                         FileUtils fileUtils = new FileUtils();
                         logger.println("[JaCoCo plugin] Copying source and class folders to jacoco resource folder");
-                        fileUtils.copyDirectory(new File(jobInfoDirectory + CLASS_DIRECTORY), resourceFolder);
-                        fileUtils.copyDirectory(new File(jobInfoDirectory + SOURCE_DIRECTORY), resourceFolder);
+                        fileUtils.copyDirectory(new File(jobInfoDirectory + CLASS_DIRECTORY), new File
+                                (jacocoResourcesFolder + "/classes"));
+                        fileUtils.copyDirectory(new File(jobInfoDirectory + SOURCE_DIRECTORY), new File
+                                (jacocoResourcesFolder + "/sources"));
                         if (fileSize == 1) {
-                            fileUtils.copyFile(jacocoExecFiles.get(0), new File(resourceFolder + "/jacoco.exec"));
+                            fileUtils.copyFile(jacocoExecFiles.get(0), new File(jacocoResourcesFolder +
+                                    "/jacoco.exec"));
                         } else {
-                            logger.println("Found " + fileSize + " jacoco.exec files.Merging...");
+                            logger.println("[JaCoCo plugin] Found " + fileSize + " jacoco.exec files.Merging...");
                             ExecFileLoader loader = new ExecFileLoader();
                             for (File exec : jacocoExecFiles) {
                                 loader.load(exec);
                             }
-                            logger.println("Successfully merged jacoco.exec files");
+                            logger.println("[JaCoCo plugin] Successfully merged jacoco.exec files");
                             loader.save(new File(jacocoResourcesFolder + "/jacoco.exec"), false);
                         }
-                        logger.println("Compressing Jacoco resource folder...");
+                        logger.println("[JaCoCo plugin] Compressing Jacoco resource folder...");
                         compressAndCopy(jacocoResourcesFolder, jobInfoDirectory + RESOURCE_ZIP_FILE_NAME);
+                        logger.println("[JaCoCo plugin] Successfully compressed jacoco resource folder");
                     } catch (IOException ex) {
                         logger.println("Error occured while creating Jacoco resource zip file." + ex.getMessage());
                     }
                 }
             } else {
-                logger.println("Zip files of .class and .java files not created.User disabled the feature.");
+                logger.println("Jacoco resources files zip not created.User disabled the feature.");
             }
             result.setThresholds(healthReports);
 
@@ -718,7 +721,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         compressFile(fileToZip, fileToZip.getName(), zipOutputStream);
         zipOutputStream.close();
         fileOutputStream.close();
-        //FileUtils.deleteDirectory(new File(sourcePath));
+        FileUtils.deleteDirectory(new File(sourcePath));
     }
 
     private boolean hasSubDirectories(String pattern) {

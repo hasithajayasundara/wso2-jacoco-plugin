@@ -7,7 +7,7 @@
       <div>
         <img src="${imagesURL}/24x24/save.png" />
 
-        <a href="resources.zip">Download jacoco resources zip file</a>
+        <a href="resources.zip">Download jacoco resources</a>
       </div>
       <e:floatingTrendGraph/>
 

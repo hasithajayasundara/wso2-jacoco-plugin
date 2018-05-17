@@ -225,17 +225,14 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         if (jobInfoDirectory != null) {
             final String path = jobInfoDirectory + "/resources.zip";
             return new HttpResponse() {
-                public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) {
-                    try {
-                        rsp.setContentType("application/zip");
-                        File file = new File(path);
-                        byte[] bytesArray = new byte[(int) file.length()];
-                        FileInputStream fis = new FileInputStream(file);
-                        fis.read(bytesArray);
-                        fis.close();
-                        rsp.getOutputStream().write(bytesArray);
-                    } catch (IOException ex) {
-                    }
+                public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException {
+                    rsp.setContentType("application/zip");
+                    File file = new File(path);
+                    byte[] bytesArray = new byte[(int) file.length()];
+                    FileInputStream fis = new FileInputStream(file);
+                    fis.read(bytesArray);
+                    fis.close();
+                    rsp.getOutputStream().write(bytesArray);
                 }
             };
         }
